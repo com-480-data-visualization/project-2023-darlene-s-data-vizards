@@ -2,7 +2,7 @@
 
 | Student's name | SCIPER |
 | -------------- | ------ |
-| Laurent Brock | |
+| Laurent Brock | 312072 |
 | Ben Kriesel | |
 | Cindy Tang | 315712 |
 
