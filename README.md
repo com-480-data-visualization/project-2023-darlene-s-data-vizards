@@ -34,6 +34,10 @@ Please, fill the following sections about your project.
 > Pre-processing of the data set you chose
 > - Show some basic statistics and get insights about the data
 
+We convert some features such as the dates or the lists of categories into a an appropriate format to be able to handle them afterwards. We perform some basic statistics such as distributions to get insights about our data. Notably, our dataset is composed by 86% of human and 14% veterinary drugs. 
+
+You can find the details in this [notebook](eda.ipynb). 
+
 ### Related work
 
 
