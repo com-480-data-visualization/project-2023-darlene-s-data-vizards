@@ -34,9 +34,13 @@ Please, fill the following sections about your project.
 > Pre-processing of the data set you chose
 > - Show some basic statistics and get insights about the data
 
-We convert some features such as the dates or the lists of categories into a an appropriate format to be able to handle them afterwards. We perform some basic statistics such as distributions to get insights about our data. Notably, our dataset is composed by 86% of human and 14% veterinary drugs. 
+We need to convert some features such as the dates or the lists of categories into a an appropriate format before to handle them. We perform some basic statistics such as plotting some distributions to get insights about our data. We organise our analysis by type of features (categorical, boolean, time and numerical). Our main observations are:
+- Our dataset is composed by 86% of human and 14% veterinary drugs.
+- The distributions of drugs by active subtances, holder company and pharmacotherapeutic groups are skewed (i.e. small values are common and large values are rare) as many natural phenomena.
+- It seems that there is a lack of data for years before 2005 and in 2023. We can remove these years for our further analysis.
+- 
 
-You can find the details in this [notebook](eda.ipynb). 
+Please refer to this [notebook](eda.ipynb) for more details. 
 
 ### Related work
 
