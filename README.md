@@ -47,6 +47,7 @@ We convert some features such as the dates or the lists of categories into a an 
 - The dataset contains different `features referring to dates`, such as `marketing_authorisation_date`, `date_of_refusal_of_marketing_authorisation`, `date_of_opinion`, `decision_date`, `first_published` and `revision_date`. 
   - The number of marketing authorisations, opinions and revisions tends to increase over years.
   - There is a pic of refusal of marketing authorisations in 2013.
+  - There is a pic of first publications in 2018.
   - The distributions over the twelve months of the year is not uniform.
   - Thus, exploring further time series analysis could be interesting to get nice visualizations. We can observe the evolution of the structure of drug market over time by combining analysis with other categorical features.
 - It seems that there is a lack of data for years before 2005 and in 2023. We can only focus our further analysis on years between 2005 and 2022 to obtain consistent results.
