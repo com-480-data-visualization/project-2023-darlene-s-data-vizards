@@ -29,7 +29,7 @@ Please, fill the following sections about your project.
 > - What am I trying to show with my visualization?
 > - Think of an overview for the project, your motivation, and the target audience.
 
-The dataset we are going to be visualising for our project is that of "European Drug Development". It contains detailed detailed information about the medecine's name, date of release, if it was a new medecine or a generic medecine, what molecule it's based on, if it's similar to already existing other medication, manufacturing company, approval means and date, and many others.
+The dataset we are going to be visualising for our project is that of "European Drug Development". It contains detailed information about the medecine's name, date of release, if it was a new medecine or a generic medecine, what molecule it's based on, if it's similar to already existing other medication, manufacturing company, approval means and date, and many others.
 
 This gives us a wealth of information on the drug market, what medecine was released and when, and more importantly how quickly "copycat" medecines are released after the 25 year patent lifespan expiry date, and others.
 Certain medecines are released under a conditional marketing approval for exceptional circumstances. We may be able to correlate this with certain important events in history, such as the advent of AIDS or COVID.
@@ -41,16 +41,19 @@ Some of us in this group have been, or are still in SV. This topic is therefore 
 
 ### Exploratory Data Analysis
 
-> Pre-processing of the data set you chose
-> - Show some basic statistics and get insights about the data
+We convert some features such as the dates or the lists of categories into a an appropriate format before to handle them. We perform some basic statistics such as plotting some distributions to get insights about our data. We organise our analysis by type of feature (categorical, boolean, time and numerical). Our main observations are the following:
+- The dataset is composed by 86% of `human` and 14% `veterinary` drugs. The category `veterinary` is then divided into different `species`.
+- The distributions of drugs over active subtances, holder companies and pharmacotherapeutic groups are skewed (i.e. small values are common and large values are rare), as many natural phenomena. To deal with these categorical features at the later stage we can group the small categories together to improve readability of visualizations.
+- The dataset contains different features referring to dates, such as `marketing_authorisation_date`, `date_of_refusal_of_marketing_authorisation`, `date_of_opinion`, `decision_date`, `first_published` and `revision_date`. 
+  - The number of marketing authorisations, opinions and revisions tends to increase over years.
+  - There is a pic of refusal of marketing authorisations in 2013.
+  - There is a pic of first publications in 2018.
+  - The distributions over the twelve months of the year is not uniform.
+  - Thus, exploring further time series analysis could be interesting to get nice visualizations. We can observe the evolution of the structure of drug market over time by combining analysis with other categorical features.
+  - It seems that there is a lack of data for years before 2005 and in 2023. We can only focus our further analysis on years between 2005 and 2022 to obtain consistent results.
 
-We need to convert some features such as the dates or the lists of categories into a an appropriate format before to handle them. We perform some basic statistics such as plotting some distributions to get insights about our data. We organise our analysis by type of features (categorical, boolean, time and numerical). Our main observations are:
-- Our dataset is composed by 86% of human and 14% veterinary drugs.
-- The distributions of drugs by active subtances, holder company and pharmacotherapeutic groups are skewed (i.e. small values are common and large values are rare) as many natural phenomena.
-- It seems that there is a lack of data for years before 2005 and in 2023. We can remove these years for our further analysis.
-- 
+Please refer to this [notebook](eda.ipynb) for more details.
 
-Please refer to this [notebook](eda.ipynb) for more details. 
 
 ### Related work
 
