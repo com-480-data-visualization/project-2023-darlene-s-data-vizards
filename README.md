@@ -60,6 +60,16 @@ Please refer to this [notebook](eda.ipynb) for more details.
 > - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
 > - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
 
+This data was discovered at the following [link](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-03-14/) by us. There, is is mentioned that the European Drug Development dataset that they made available was first found and presented [here](https://towardsdatascience.com/dissecting-28-years-of-european-pharmaceutical-development-3affd8f87dc0) by Miquel Girotto.
+
+In his short analysis, he talks about some of the points which interest us, like the fact that complex diseases are under still active development. However, there isn't a mention of any sort of time-based correlation with epidemic diseases, nor diversity in each field.
+
+The analysis is rather short, and doesn't explore as many faces of the data as we plan to, like for example global industry in the past two decades. Additionally, none of the four plots provided are interactive.
+
+The [HealthData](https://www.healthdata.org/gbd/data-visualizations) page has been quite intersting in order to find various types of visualisations. This [CDC](https://covid.cdc.gov/covid-data-tracker/#vaccinations_vacc-people-booster-percent-total) page presents data quickly and concisely, and this [Protein Atlas](https://www.proteinatlas.org/humanproteome/immune+cell) page compares and clusters data quite nicely.
+
+This dataset is new to our group, and we have not used it in any other data-related courses, such as ADA.
+
 ## Milestone 2 (7th May, 5pm)
 
 **10% of the final grade**
