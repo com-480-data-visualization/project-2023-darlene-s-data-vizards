@@ -3,7 +3,7 @@
 | Student's name | SCIPER |
 | -------------- | ------ |
 | Laurent Brock | 312072 |
-| Ben Kriesel | |
+| Ben Kriesel | 359730 | 
 | Cindy Tang | 315712 |
 
 [Milestone 1](#milestone-1) • [Milestone 2](#milestone-2) • [Milestone 3](#milestone-3)
@@ -19,15 +19,12 @@ Please, fill the following sections about your project.
 
 ### Dataset
 
-> Find a dataset (or multiple) that you will explore. Assess the quality of the data it contains and how much preprocessing / data-cleaning it will require before tackling visualization. We recommend using a standard dataset as this course is not about scraping nor data processing.
->
-> Hint: some good pointers for finding quality publicly available datasets ([Google dataset search](https://datasetsearch.research.google.com/), [Kaggle](https://www.kaggle.com/datasets), [OpenSwissData](https://opendata.swiss/en/), [SNAP](https://snap.stanford.edu/data/) and [FiveThirtyEight](https://data.fivethirtyeight.com/)), you could use also the DataSets proposed by the ENAC (see the Announcements section on Zulip).
+The dataset we are working with is from the [European Medicines Agency](https://www.ema.europa.eu/en/about-us/what-we-do/authorisation-medicines). The EMA is tasked with assessing new medicine for the european union. For each medicine the agency tests a european public assessment report (EPAR) is published describing its evaluation results. Our dataset includes all EPAR results since 1995 and thus gives an insight about the european drug marked. The dataset is published by the EMA, a up-to-date version can be found [here](https://www.ema.europa.eu/en/medicines/download-medicine-data#european-public-assessment-reports-(epar)-section). 
+
+To visualize the dataset will need some preprocessing. This is especially the case for making sensible groups of medicine, as the existing groups in the dataset are too detailed for our purpose.
 
 ### Problematic
 
-> Frame the general topic of your visualization and the main axis that you want to develop.
-> - What am I trying to show with my visualization?
-> - Think of an overview for the project, your motivation, and the target audience.
 
 The dataset we are going to be visualising for our project is that of "European Drug Development". It contains detailed information about the medecine's name, date of release, if it was a new medecine or a generic medecine, what molecule it's based on, if it's similar to already existing other medication, manufacturing company, approval means and date, and many others.
 
@@ -37,7 +34,6 @@ Certain medecines are released under a conditional marketing approval for except
 Therefore, we are trying to show the global trends of the drug market worldwide, how its dynamics could potentially have changed, if the production of new molecules has increased or decreased, and whether global investment and development trends in the pharmaceutical industry follow disease prevalence, from the timespan of 1998-08-19 -> 2023-03-08, that the dataset covers.
 
 Some of us in this group have been, or are still in SV. This topic is therefore quite close to home and could bring insights into how the industry has evolved recently. Our target audience would be students in medecine or biology, who wish to gain insights or easily-accessible statistics about the drug market.
-
 
 ### Exploratory Data Analysis
 
@@ -53,7 +49,6 @@ We convert some features such as the dates or the lists of categories into a an 
   - It seems that there is a lack of data for years before 2005 and in 2023. We can only focus our further analysis on years between 2005 and 2022 to obtain consistent results.
 
 Please refer to this [notebook](eda.ipynb) for more details.
-
 
 ### Related work
 
