@@ -52,12 +52,6 @@ Please refer to this [notebook](eda.ipynb) for more details.
 
 ### Related work
 
-
-> - What others have already done with the data?
-> - Why is your approach original?
-> - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
-> - In case you are using a dataset that you have already explored in another context (ML or ADA course, semester project...), you are required to share the report of that work to outline the differences with the submission for this class.
-
 This data was discovered at the following [link](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-03-14/) by us. There, is is mentioned that the European Drug Development dataset that they made available was first found and presented [here](https://towardsdatascience.com/dissecting-28-years-of-european-pharmaceutical-development-3affd8f87dc0) by Miquel Girotto.
 
 In his short analysis, he talks about some of the points which interest us, like the fact that complex diseases are under still active development. However, there isn't a mention of any sort of time-based correlation with epidemic diseases, nor diversity in each field.
