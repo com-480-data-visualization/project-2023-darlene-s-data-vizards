@@ -1,0 +1,87 @@
+:root {
+	--light-theme-color: #B3F2C3;
+	--dark-theme-color: #045159;
+	--light-background-color: #F2F2F2;
+	--dark-background-color: #202126;
+	--white: #FFFFFF;
+ 	--black: #000000;
+}
+
+/*
+Make the border and padding be counted as part of the element's size.
+*/
+* {
+	box-sizing: border-box;
+}
+
+/*
+Make the document fill the whole viewport, this overrides any weird defaults that browsers might have.
+*/
+html, body, figure {
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+/* Default font and size */
+body {
+	font-family: sans-serif;
+	font-size: 1rem;
+}
+
+/* Paragraphs */
+p {
+	text-align: justify;
+}
+
+/* Titles*/
+h1, h2, h3, h4, h5, h6
+{
+	color: var(--dark-theme-color);
+}
+h1 { font-size: 3rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.25rem; }
+
+/* Top navigation bar */
+nav {
+	width: 100%;
+
+	padding-top: 1rem;
+	padding-bottom: 1rem;
+
+	background-color: var(--dark-theme-color);
+}
+
+/* Make the links in the navbar bold */
+nav a {
+	text-decoration: none;
+	font-weight: bold;
+	color: var(--white);
+}
+
+/* Style of the list of links in the navbar */
+nav ul {
+	/* Clear defaults */
+	margin: 1rem 4rem;
+	padding: 0;
+
+	/* Remove list bullet points */
+	list-style: none;
+
+	/*
+	Flexbox is a modern mechanism for arranging elements
+		https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+	This will arrange the elements in a row
+	*/
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+}
+
+/* Space between links */
+nav li {
+	margin-right: 4rem;
+}
