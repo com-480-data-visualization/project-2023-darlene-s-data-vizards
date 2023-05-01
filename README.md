@@ -10,13 +10,6 @@
 
 ## Milestone 1 (7th April, 5pm)
 
-**10% of the final grade**
-
-This is a preliminary milestone to let you set up goals for your final project and assess the feasibility of your ideas.
-Please, fill the following sections about your project.
-
-*(max. 2000 characters per section)*
-
 ### Dataset
 
 The dataset we are working with is from the [European Medicines Agency](https://www.ema.europa.eu/en/about-us/what-we-do/authorisation-medicines). The EMA is tasked with assessing new medicine for the european union. For each medicine the agency tests a european public assessment report (EPAR) is published describing its evaluation results. Our dataset includes all EPAR results since 1995 and thus gives an insight about the european drug marked. The dataset is published by the EMA, a up-to-date version can be found [here](https://www.ema.europa.eu/en/medicines/download-medicine-data#european-public-assessment-reports-(epar)-section). 
@@ -42,8 +35,8 @@ We convert some features such as the dates or the lists of categories into a an 
 - The distributions of drugs over active subtances, holder companies and pharmacotherapeutic groups are skewed (i.e. small values are common and large values are rare), as many natural phenomena. To deal with these categorical features at the later stage we can group the small categories together to improve readability of visualizations.
 - The dataset contains different features referring to dates, such as `marketing_authorisation_date`, `date_of_refusal_of_marketing_authorisation`, `date_of_opinion`, `decision_date`, `first_published` and `revision_date`. 
   - The number of marketing authorisations, opinions and revisions tends to increase over years.
-  - There is a pic of refusal of marketing authorisations in 2013.
-  - There is a pic of first publications in 2018.
+  - There is a peak of refusal of marketing authorisations in 2013.
+  - There is a peak of first publications in 2018.
   - The distributions over the twelve months of the year is not uniform.
   - Thus, exploring further time series analysis could be interesting to get nice visualizations. We can observe the evolution of the structure of drug market over time by combining analysis with other categorical features.
   - It seems that there is a lack of data for years before 2005 and in 2023. We can only focus our further analysis on years between 2005 and 2022 to obtain consistent results.
@@ -52,7 +45,7 @@ Please refer to this [notebook](eda.ipynb) for more details.
 
 ### Related work
 
-This data was discovered at the following [link](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-03-14/) by us. There, is is mentioned that the European Drug Development dataset that they made available was first found and presented [here](https://towardsdatascience.com/dissecting-28-years-of-european-pharmaceutical-development-3affd8f87dc0) by Miquel Girotto.
+This data was discovered at the following [link](https://github.com/rfordatascience/tidytuesday/tree/master/data/2023/2023-03-14/) by us. There, is  mentioned that the European Drug Development dataset that they made available was first found and presented [here](https://towardsdatascience.com/dissecting-28-years-of-european-pharmaceutical-development-3affd8f87dc0) by Miquel Girotto.
 
 In his short analysis, he talks about some of the points which interest us, like the fact that complex diseases are under still active development. However, there isn't a mention of any sort of time-based correlation with epidemic diseases, nor diversity in each field.
 
@@ -65,6 +58,8 @@ This dataset is new to our group, and we have not used it in any other data-rela
 ## Milestone 2 (7th May, 5pm)
 
 **10% of the final grade**
+
+Please find our initial website [here](https://com-480-data-visualization.github.io/project-2023-darlene-s-data-vizards/).
 
 
 ## Milestone 3 (4th June, 5pm)
