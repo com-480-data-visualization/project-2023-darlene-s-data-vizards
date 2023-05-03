@@ -50,51 +50,45 @@ h5{
 	font-weight: 100;
 }
 
-/* Top navigation bar */
-nav {
+header {
 	width: 100%;
-	padding-top: 1rem;
-	padding-bottom: 1rem;
-
+	padding: 0 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 0;
 	background-color: var(--dark-background-color);
 }
 
-/* Make the links in the navbar bold */
-nav a {
-	text-decoration: none;
-	font-weight: bold;
-	color: var(--white);
-	font-size: 1.5rem;
+header .logo {
+	max-height: 10vh;
+	padding: 1rem 0;
+	padding-left: 4rem;
+	cursor: pointer;
+	margin-left: auto;
 }
 
-nav a:hover{
-	color: var(--theme-color);
-}
-
-/* Style of the list of links in the navbar */
-nav ul {
-	/* Clear defaults */
-	margin: 2rem 10rem;
-	padding: 0;
-
-	/* Remove list bullet points */
+header nav ul {
+	padding: 0 0;
 	list-style: none;
-
-	/*
-	Flexbox is a modern mechanism for arranging elements
-		https://css-tricks.com/snippets/css/a-guide-to-flexbox/
-	This will arrange the elements in a row
-	*/
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: flex-start;
 }
 
-/* Space between links */
-nav li {
+header nav li {
 	margin-right: 4rem;
 }
 
+header nav a {
+	text-decoration: none;
+	color: var(--white);
+	font-size: 1.5rem;
+}
+
+header nav a:hover{
+	color: var(--theme-color);
+}
 
 .intro{
 	position: relative;
@@ -118,7 +112,7 @@ nav li {
 
 .intro .content h1{
 	font-size: 6rem;
-	margin-top: 12rem;
+	margin-top: 6rem;
 	margin-bottom: 0;
 	color: var(--white);
 }
@@ -178,27 +172,27 @@ nav li {
 	margin-bottom: 1rem;
 }
 
-.center h1{
+.team-content .center h1{
 	color: var(--black);
 	text-align: center;
 }
 
-.icon i{
+.team-content .icon i{
 	display: inline-block;
 	color: var(--theme-color);
 	font-size: 2rem;
 	margin: 0 1rem;
 }
 
-.icon i:hover{
+.team-content .icon i:hover{
 	transform: scale(1.2);
 }
 
-.box h2{
+.team-content .box h2{
 	color: var(--black);
 }
 
-.box h5{
+.team-content .box h5{
 	color: var(--dark-background-color);
 }
 
