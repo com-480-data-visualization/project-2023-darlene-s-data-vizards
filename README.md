@@ -30,7 +30,7 @@ Some of us in this group have been, or are still in SV. This topic is therefore 
 
 ### Exploratory Data Analysis
 
-We convert some features such as the dates or the lists of categories into a an appropriate format before to handle them. We perform some basic statistics such as plotting some distributions to get insights about our data. We organise our analysis by type of feature (categorical, boolean, time and numerical). Our main observations are the following:
+Firstly, we convert some features such as the dates or the lists of categories into a an appropriate format before to handle them. Secondly, we perform some basic statistics such as plotting some distributions to get insights about our data. Thirdly, we organise our analysis by type of feature (categorical, boolean, time and numerical). Based on our analysis, the key observations we have made are as follows:
 - The dataset is composed by 86% of `human` and 14% `veterinary` drugs. The category `veterinary` is then divided into different `species`.
 - The distributions of drugs over active subtances, holder companies and pharmacotherapeutic groups are skewed (i.e. small values are common and large values are rare), as many natural phenomena. To deal with these categorical features at the later stage we can group the small categories together to improve readability of visualizations.
 - The dataset contains different features referring to dates, such as `marketing_authorisation_date`, `date_of_refusal_of_marketing_authorisation`, `date_of_opinion`, `decision_date`, `first_published` and `revision_date`. 
@@ -59,7 +59,7 @@ This dataset is new to our group, and we have not used it in any other data-rela
 
 **10% of the final grade**
 
-Please find our initial website [here](https://com-480-data-visualization.github.io/project-2023-darlene-s-data-vizards/).
+The `/docs` folder contains the code to build our [website](https://com-480-data-visualization.github.io/project-2023-darlene-s-data-vizards/).
 
 
 ## Milestone 3 (4th June, 5pm)
