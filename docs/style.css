@@ -95,6 +95,7 @@ nav li {
 	margin-right: 4rem;
 }
 
+
 .intro{
 	position: relative;
 	width: 100%;
@@ -130,12 +131,17 @@ nav li {
 
 .intro .content a{
 	background: var(--white);
-	padding: 1rem 2rem;
+	padding: 1rem 1.5rem;
 	color: var(--theme-color);
 	text-decoration: none;
 	border-radius: 2rem;
 	font-weight: bold;
 	font-size: 1.5rem;
+}
+
+.intro .content a:hover{
+	background: var(--theme-color);
+	color: var(--white);
 }
 
 .theme-color{
