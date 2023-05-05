@@ -59,7 +59,7 @@ This dataset is new to our group, and we have not used it in any other data-rela
 
 **10% of the final grade**
 
-The `/docs` folder contains the code to build our [website](https://com-480-data-visualization.github.io/project-2023-darlene-s-data-vizards/).
+You can find the code to build our [website](https://com-480-data-visualization.github.io/project-2023-darlene-s-data-vizards/) in the `/docs` folder and our report [here](milestone2.pdf).
 
 
 ## Milestone 3 (4th June, 5pm)
