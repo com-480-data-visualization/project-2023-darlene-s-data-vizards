@@ -10,29 +10,18 @@ d3.csv("medecines.csv", function(data) {
     } else {
         if (data["Content type:"] === "Category") {
             indexing = Object.keys(data).map(key => data[key]).splice(1);
-        } else {
-            console.log(indexing);
-            delete data[""];
             for (let i = 0; i < indexing.length; i++) {
-                const old_key = Object.keys(data)[i];
-                const new_key = indexing[i];
-                
-
-                if (old_key !== new_key) {
-                    Object.defineProperty(data, new_key,
-                        Object.getOwnPropertyDescriptor(data, old_key));
-                    delete data[old_key];
-                }
+                dataset[indexing[i]] = new Array();
             }
-            // Delete all keys starting with "Unnamed"
-            for (let i = 0; i < Object.keys(data).length; i++) {
-                const key = Object.keys(data)[i];
-                if (key.startsWith("Unnamed")) {
-                    delete data[key];
-                }
-            }
+        } else {
+            delete data[""];
 
-            console.log(data);
+            for (let i = 0; i < indexing.length; i++) {
+                const dat = Object.values(data);
+                dataset[indexing[i]].push(dat[i]);
+            }
         }
     }
 });
+
+console.log(dataset);
