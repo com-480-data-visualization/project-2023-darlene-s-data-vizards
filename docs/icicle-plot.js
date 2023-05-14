@@ -1,15 +1,12 @@
 // Read CSV dataset from filesystem and store it in a variable
 
 async function readTextFile(fileName) {
-    let dataset = Object();
-    let indexing = Object();
-
-
-    return new Promise(function(resolve, reject) {
-    d3.csv(fileName, function(data) {
-
-        if (data) {
-            //Convert the CSV into an array of objects
+    return new Promise((resolve, reject) => {
+        let dataset = Object();
+        let indexing = Object();
+        
+        d3.csv(fileName, function(data) {
+            // Convert the CSV into an array of objects
             if (Number(data[""]) < 7 && Number(data[""]) >= 0) {
                 //??
             } else {
@@ -20,19 +17,16 @@ async function readTextFile(fileName) {
                     }
                 } else {
                     delete data[""];
-
                     for (let i = 0; i < indexing.length; i++) {
                         const dat = Object.values(data);
                         dataset[indexing[i]].push(dat[i]);
                     }
                 }
             }
-        } else {
-            reject(new Error("Failed to read file"));
-        }
-    });
-    resolve(dataset);
-    
+        }).then(function() {
+            console.log("Dataset loaded");
+            resolve(dataset);
+        });
     });
 }
 
@@ -42,6 +36,7 @@ async function readData() {
     console.log(dataset);
     return dataset;
 }
+
 
 // Create the icicle plot
 async function createIciclePlot() {
