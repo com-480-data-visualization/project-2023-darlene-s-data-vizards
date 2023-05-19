@@ -103,6 +103,9 @@ async function readData() {
     const diabetes_count = getRegexMatches(dataset["Therapeutic area"], diabetes_regex);
     // Get count of values matching metabolic_regex in dataset["Therapeutic area"]
     const metabolic_count = getRegexMatches(dataset["Therapeutic area"], metabolic_regex);
+    // Get count of values not matching any of the above regexes
+    const other_count = dataset["Therapeutic area"].length - oncology_count - neuroscience_count - covid_count - respiratory_count - cardiovascular_count - diabetes_count - metabolic_count;
+
 
     // Log the counts
     console.log("Oncology count: " + oncology_count);
@@ -112,6 +115,7 @@ async function readData() {
     console.log("Cardiovascular count: " + cardiovascular_count);
     console.log("Diabetes count: " + diabetes_count);
     console.log("Metabolic count: " + metabolic_count);
+    console.log("Other count: " + other_count);
 
     console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
     
