@@ -41,13 +41,47 @@ function getValuesAtIndex(obj, index) {
 
 }
   
-  
+function getRegexMatches(data, regex) {
+    return data.reduce((acc, cur) => {
+        if (cur.match(regex) !== null) {
+            acc++;
+        }
+        return acc;
+    }, 0);
+}
+
 
 // Wait for readCSVFile to finish reading the file
 async function readData() {
     let dataset = await readCSVFile("medecines.csv");
-    console.log(dataset);
-    // console.log(getValuesAtIndex(dataset, 0));
+    //console.log(dataset);
+
+    // Get all unique values in field "Therapeutic area"
+    let therapeuticAreas = new Set(dataset["Therapeutic area"]);
+    // Convert the set to a array
+    therapeuticAreas = Array.from(therapeuticAreas);
+
+    //console.log(therapeuticAreas);
+
+    const oncology_regex = /\b\w+(?:oma|emia)\b/g;
+    // Neuroscience regex
+    const neuroscience_regex = /\b\w+(?:phrenia|phobia|drome|algia|itis|osis|pathy|paresis|plegia|pnea|rrhea|sthenia|trophy)\b/g;
+    // COVID regex
+    const covid_regex = /\b\w+(?:covid|corona|sars|virus|pandemic|epidemic|influenza|flu|vaccine|vaccination|viral|virus|virology|viral|virologist|virological|virologists|virologies|virologicall)\b/g;
+
+
+    // Get count of values matching oncology_regex in dataset["Therapeutic area"]
+    const oncology_count = getRegexMatches(dataset["Therapeutic area"], oncology_regex);
+    // Get count of values matching neuroscience_regex in dataset["Therapeutic area"]
+    const neuroscience_count = getRegexMatches(dataset["Therapeutic area"], neuroscience_regex);
+    // Get count of values matching covid_regex in dataset["Therapeutic area"]
+    const covid_count = getRegexMatches(dataset["Therapeutic area"], covid_regex);
+
+    // Log the counts
+    console.log("Oncology count: " + oncology_count);
+    console.log("Neuroscience count: " + neuroscience_count);
+    console.log("COVID count: " + covid_count);
+    
     return dataset;
 }
 
