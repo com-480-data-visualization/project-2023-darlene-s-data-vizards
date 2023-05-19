@@ -40,7 +40,8 @@ function getValuesAtIndex(obj, index) {
     return Object.entries(obj).map(([key, value]) => value[index]);
 
 }
-  
+
+// Get count of values matching regex in data
 function getRegexMatches(data, regex) {
     return data.reduce((acc, cur) => {
         if (cur.match(regex) !== null) {
@@ -48,6 +49,16 @@ function getRegexMatches(data, regex) {
         }
         return acc;
     }, 0);
+}
+
+// Get all values matching regex in data
+function getRegexMatchesArray(data, regex) {
+    return data.reduce((acc, cur) => {
+        if (cur.match(regex) !== null) {
+            acc.push(cur);
+        }
+        return acc;
+    }, []);
 }
 
 
@@ -68,6 +79,14 @@ async function readData() {
     const neuroscience_regex = /\b\w+(?:phrenia|phobia|drome|algia|itis|osis|pathy|paresis|plegia|pnea|rrhea|sthenia|trophy)\b/g;
     // COVID regex
     const covid_regex = /\b\w+(?:covid|corona|sars|virus|pandemic|epidemic|influenza|flu|vaccine|vaccination|viral|virus|virology|viral|virologist|virological|virologists|virologies|virologicall)\b/g;
+    // Respiratory diseases regex
+    const respiratory_regex = /\b\w+(?:pneu|chial|broncho)\b/g;
+    // Cardiovascular diseases regex
+    const cardiovascular_regex = /\b\w+(?:cardio|vascular|heart|blood|hypertension|hypotension|hypertensive|hypotensive|hypertensives|hypotensives|hypertensions|hypotensions)\b/g;
+    // Diabetes regex
+    const diabetes_regex = /\b\w+(?:diabetes|insulin|glucagon)\b/g;
+    // Metabolic diseases regex
+    const metabolic_regex = /\b\w+(?:metaboli)\b/g;
 
 
     // Get count of values matching oncology_regex in dataset["Therapeutic area"]
@@ -76,14 +95,62 @@ async function readData() {
     const neuroscience_count = getRegexMatches(dataset["Therapeutic area"], neuroscience_regex);
     // Get count of values matching covid_regex in dataset["Therapeutic area"]
     const covid_count = getRegexMatches(dataset["Therapeutic area"], covid_regex);
+    // Get count of values matching respiratory_regex in dataset["Therapeutic area"]
+    const respiratory_count = getRegexMatches(dataset["Therapeutic area"], respiratory_regex);
+    // Get count of values matching cardiovascular_regex in dataset["Therapeutic area"]
+    const cardiovascular_count = getRegexMatches(dataset["Therapeutic area"], cardiovascular_regex);
+    // Get count of values matching diabetes_regex in dataset["Therapeutic area"]
+    const diabetes_count = getRegexMatches(dataset["Therapeutic area"], diabetes_regex);
+    // Get count of values matching metabolic_regex in dataset["Therapeutic area"]
+    const metabolic_count = getRegexMatches(dataset["Therapeutic area"], metabolic_regex);
 
     // Log the counts
     console.log("Oncology count: " + oncology_count);
     console.log("Neuroscience count: " + neuroscience_count);
     console.log("COVID count: " + covid_count);
+    console.log("Respiratory count: " + respiratory_count);
+    console.log("Cardiovascular count: " + cardiovascular_count);
+    console.log("Diabetes count: " + diabetes_count);
+    console.log("Metabolic count: " + metabolic_count);
+
+    console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
     
     return dataset;
 }
+
+function findTopKSubstrings(array, k) {
+    /**
+     * Finds the top-k most common substrings in an array of strings, NOT TESTED
+     * @param {Array} array - The array of strings to search.
+     * @param {number} k - The number of substrings to return.
+     * @returns {Array} - An array containing the top-k most common substrings.
+     * @example
+     */
+
+    const substringCounts = {};
+    
+    // Count occurrences of substrings
+    for (let i = 0; i < array.length; i++) {
+      const element = array[i];
+      const words = element.split(" ");
+      for (let j = 0; j < words.length; j++) {
+        const word = words[j];
+        if (!substringCounts[word]) {
+          substringCounts[word] = 0;
+        }
+        substringCounts[word]++;
+      }
+    }
+  
+    // Sort substrings by count
+    const sortedSubstrings = Object.keys(substringCounts).sort((a, b) => {
+      return substringCounts[b] - substringCounts[a];
+    });
+  
+    // Return top-k substrings
+    return sortedSubstrings.slice(0, k);
+}
+  
 
 
 // Create the icicle plot
