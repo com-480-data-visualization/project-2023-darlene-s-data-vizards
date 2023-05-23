@@ -228,3 +228,8 @@ header nav a:hover{
 	font-weight: bold;
 	font-size: 1.5rem;
 }
+
+#icicle-plot {
+	width: 100%;
+	height: auto;
+  }
