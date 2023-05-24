@@ -60,19 +60,75 @@ function getRegexMatchesArray(data, regex) {
     }, []);
 }
 
+function findTopKSubstrings(array, k) {
+  /**
+   * Finds the top-k most common substrings in an array of strings, NOT TESTED
+   * @param {Array} array - The array of strings to search.
+   * @param {number} k - The number of substrings to return.
+   * @returns {Array} - An array containing the top-k most common substrings.
+   * @example
+   */
+
+  const substringCounts = {};
+  
+  // Count occurrences of substrings
+  for (let i = 0; i < array.length; i++) {
+    const element = array[i];
+    const words = element.split(" ");
+    for (let j = 0; j < words.length; j++) {
+      const word = words[j];
+      if (!substringCounts[word]) {
+        substringCounts[word] = 0;
+      }
+      substringCounts[word]++;
+    }
+  }
+
+  // Sort substrings by count
+  const sortedSubstrings = Object.keys(substringCounts).sort((a, b) => {
+    return substringCounts[b] - substringCounts[a];
+  });
+
+  // Return top-k substrings
+  return sortedSubstrings.slice(0, k);
+}
+
+// Get data for subclass
+function getSubclassData(dataset, subclass_regex) {
+  const subclassNames = findTopKSubstrings(getRegexMatchesArray(dataset, subclass_regex), 100);
+  const totalSubclassCount = getRegexMatches(getRegexMatchesArray(dataset, subclass_regex), "");
+
+  const childrenData = subclassNames.map((subclass) => {
+    const count = getRegexMatches(getRegexMatchesArray(dataset, subclass_regex), subclass);
+    return {
+      name: subclass,
+      value: count,
+    };
+  });
+
+  const topSubclassCount = childrenData.reduce((sum, subclass) => sum + subclass.value, 0);
+  const otherCount = totalSubclassCount - topSubclassCount;
+
+  childrenData.push({
+    name: "other",
+    value: otherCount,
+  });
+
+  return childrenData;
+}
+
+
 
 // Wait for readCSVFile to finish reading the file
 async function readData() {
     let dataset = await readCSVFile("medecines.csv");
-    //console.log(dataset);
 
     // Get all unique values in field "Therapeutic area"
     let therapeuticAreas = new Set(dataset["Therapeutic area"]);
     // Convert the set to a array
     therapeuticAreas = Array.from(therapeuticAreas);
 
-    //console.log(therapeuticAreas);
-
+    
     const oncology_regex = /\b\w+(?:oma|emia)\b/g;
     // Neuroscience regex
     const neuroscience_regex = /\b\w+(?:phrenia|phobia|drome|algia|itis|osis|pathy|paresis|plegia|pnea|rrhea|sthenia|trophy)\b/g;
@@ -107,6 +163,7 @@ async function readData() {
 
 
     // Log the counts
+    console.log("dataset length:" + dataset["Therapeutic area"].length);
     console.log("Oncology count: " + oncology_count);
     console.log("Neuroscience count: " + neuroscience_count);
     console.log("COVID count: " + covid_count);
@@ -118,38 +175,44 @@ async function readData() {
 
     console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
 
-
+    // Formatted dataset for Icicle plot
     dataset = {
-        name: "Therapeutic area",
-        value: dataset["Therapeutic area"].length,
+        name: "all",
         children: [
           {
             name: "oncology",
             value: oncology_count,
+            children: getSubclassData(dataset["Therapeutic area"], oncology_regex),
           },
           {
             name: "neuroscience",
             value: neuroscience_count,
+            children: getSubclassData(dataset["Therapeutic area"], neuroscience_regex),
           },
           {
             name: "covid",
             value: covid_count,
+            children: getSubclassData(dataset["Therapeutic area"], covid_regex),
           },
           {
             name: "respiratory",
             value: respiratory_count,
+            children: getSubclassData(dataset["Therapeutic area"], respiratory_regex),
           },
           {
             name: "cardiovascular",
             value: cardiovascular_count,
+            children: getSubclassData(dataset["Therapeutic area"], cardiovascular_regex),
           },
           {
             name: "diabetes",
             value: diabetes_count,
+            children: getSubclassData(dataset["Therapeutic area"], diabetes_regex),
           },
           {
             name: "cardiovascular",
-            value: metabolic_count,
+            value: cardiovascular_count,
+            children: getSubclassData(dataset["Therapeutic area"], cardiovascular_regex),
           },
           {
             name: "other",
@@ -159,42 +222,7 @@ async function readData() {
       };
     
     return dataset;
-}
-
-function findTopKSubstrings(array, k) {
-    /**
-     * Finds the top-k most common substrings in an array of strings, NOT TESTED
-     * @param {Array} array - The array of strings to search.
-     * @param {number} k - The number of substrings to return.
-     * @returns {Array} - An array containing the top-k most common substrings.
-     * @example
-     */
-
-    const substringCounts = {};
-    
-    // Count occurrences of substrings
-    for (let i = 0; i < array.length; i++) {
-      const element = array[i];
-      const words = element.split(" ");
-      for (let j = 0; j < words.length; j++) {
-        const word = words[j];
-        if (!substringCounts[word]) {
-          substringCounts[word] = 0;
-        }
-        substringCounts[word]++;
-      }
-    }
-  
-    // Sort substrings by count
-    const sortedSubstrings = Object.keys(substringCounts).sort((a, b) => {
-      return substringCounts[b] - substringCounts[a];
-    });
-  
-    // Return top-k substrings
-    return sortedSubstrings.slice(0, k);
-}
-  
-
+} 
 
 // Create the icicle plot
 async function createIciclePlot() {
@@ -202,8 +230,8 @@ async function createIciclePlot() {
   let dataset = await readData();
 
   // Define the dimensions of the SVG container
-  const width = 1000;
-  const height = 500;
+  const width = window.innerWidth;
+  const height = window.innerHeight;;
 
   // Color scale 
   const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, dataset.children.length + 1))
@@ -228,7 +256,7 @@ async function createIciclePlot() {
   
     const svg = d3.create("svg")
         .attr("viewBox", [0, 0, width, height])
-        .style("font", "10px sans-serif");
+        // .style("font", "10px sans-serif");
   
     const cell = svg
       .selectAll("g")
@@ -252,7 +280,7 @@ async function createIciclePlot() {
         .style("user-select", "none")
         .attr("pointer-events", "none")
         .attr("x", 4)
-        .attr("y", 13)
+        .attr("y", 16)
         .attr("fill-opacity", d => +labelVisible(d));
   
     text.append("tspan")
