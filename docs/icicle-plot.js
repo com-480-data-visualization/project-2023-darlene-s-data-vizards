@@ -134,50 +134,98 @@ async function readData() {
 		therapeuticAreas = Array.from(therapeuticAreas);
 
 		
-		const oncology_regex = /\b\w+(?:oma|emia)\b/g;
-		// Neuroscience regex
-		const neuroscience_regex = /\b\w+(?:phrenia|phobia|drome|algia|itis|osis|pathy|paresis|plegia|pnea|rrhea|sthenia|trophy)\b/g;
-		// COVID regex
-		const covid_regex = /\b\w+(?:covid|corona|sars|virus|pandemic|epidemic|influenza|flu|vaccine|vaccination|viral|virus|virology|viral|virologist|virological|virologists|virologies|virologicall)\b/g;
-		// Respiratory diseases regex
-		const respiratory_regex = /\b\w+(?:pneu|chial|broncho)\b/g;
-		// Cardiovascular diseases regex
-		const cardiovascular_regex = /\b\w+(?:cardio|vascular|heart|blood|hypertension|hypotension|hypertensive|hypotensive|hypertensives|hypotensives|hypertensions|hypotensions)\b/g;
-		// Diabetes regex
-		const diabetes_regex = /\b\w+(?:diabetes|insulin|glucagon)\b/g;
-		// Metabolic diseases regex
-		const metabolic_regex = /\b\w+(?:metaboli)\b/g;
+		// Field: Oncology
+		const oncology_regex = /\b(?:oncology|cancer(?:ous)?|tumou?r(?:ous)?|leukemia(?:tic)?)\b/gi;
+
+		// Field: Neurology
+		const neurology_regex = /\b(?:neurology|neuro(?:genesis|logy)?|brain|spinal|cereb(?:ellum|ral)?|phrenia|nervou?s?|phobia|osis|pathy|paresis|plegia|trophy(?:ic)?)\b/gi;
+
+		// Field: Infectious Diseases
+		const infectious_regex = /\b(?:infectious|infection|bacteria|virus|pathogen|microbe|parasite)\b/gi;
+
+		// Field: Cardiology
+		const cardiology_regex = /\b(?:cardiology|heart|cardio(?:vascular)?|blood(?: pressure)?|tension|tensive)\b/gi;
+
+		// Field: Respiratory Medicine
+		const respiratory_regex = /\b(?:respiratory|respiration|pneu(?:monia)?|chial|broncho(?:genic|spasm))\b/gi;
+
+		// Field: Endocrinology
+		const endocrinology_regex = /\b(?:endocrinology|endocrine|hormone|thyroid|diabetes|insulin|glucagon)\b/gi;
+
+		// Field: Gastroenterology
+		const gastroenterology_regex = /\b(?:gastroenterology|gastro(?:intestinal)?|stomach|intestinal|digestion|gut|colitis|gastritis)\b/gi;
+
+		// Field: Dermatology
+		const dermatology_regex = /\b(?:dermatology|dermato(?:logy)?|skin|epidermis|rash|eczema|psoriasis)\b/gi;
+
+		// Field: Ophthalmology
+		const ophthalmology_regex = /\b(?:ophthalmology|ophthalmic|eye|vision|retina|cornea|cataract)\b/gi;
+
+		// Field: Orthopedics
+		const orthopedics_regex = /\b(?:orthopedics|orthopedic|bone|joint|musculoskeletal|fracture|arthritis|osteoporosis|scoliosis|kyphosis|spine|orthopedist)\b/gi;
+
+		// Field: Urology
+		const urology_regex = /\b(?:urology|uro(?:logy)?|urinary|bladder|kidney|prostate|nephro(?:logy)?|cystitis|urolithiasis|urination)\b/gi;
+
+		// Field: Obstetrics and Gynecology
+		const obstetrics_gynecology_regex = /\b(?:obstetrics(?: and gynecology)?|gynecology|obstetric|pregnancy|obstetrician|gynecologic|obstetrical|menstruation|reproductive|menopause|endometriosis|pelvic|cervical|ovarian)\b/gi;
+
+		// Field: Pediatrics
+		const pediatrics_regex = /\b(?:pediatrics|pediatric|child|children|infant|neonatal|adolescent|paediatric|pediatrician|peds|pediatry|pediatrist)\b/gi;
+
+		// Field: Psychiatry
+		const psychiatry_regex = /\b(?:psychiatry|psychiatric|psychology|mental|psychosis|schizophrenia|depression|anxiety|bipolar|psychologist|psychiatrist)\b/gi;
+
+		// Field: Radiology
+		const radiology_regex = /\b(?:radiology|radiologic|imaging|x-ray|ultrasound|CT(?: scan)?|MRI|nuclear|radiographer|radiologist)\b/gi;
+
+		// Field: Anesthesiology
+		const anesthesiology_regex = /\b(?:anesthesiology|anesthetic|anesthesia|anesthesiologist|sedation|anesthetist|anesthetize|anesthetic|analgesia|anesthetization)\b/gi;
+
+		// Field: Hematology
+		const hematology_regex = /\b(?:hematology|hematologic|blood|anemia|leukemia|lymphoma|platelet|erythrocyte|coagulation|hemoglobin|hematologist)\b/gi;
+
+		// Field: Allergy and Immunology
+		const allergy_immunology_regex = /\b(?:allergy(?: and immunology)?|immunology|allergic|allergen|allergist|immune|immunity|hypersensitivity|autoimmune|immunologist)\b/gi;
+
+		// Field: Nephrology
+		const nephrology_regex = /\b(?:nephrology|nephro(?:logy)?|kidney|renal|glomerulonephritis|nephritis|nephropathy|nephrologist|renal failure|renal insufficiency)\b/gi;
 
 
-		// Get count of values matching oncology_regex in dataset["Therapeutic area"]
+
 		const oncology_count = getRegexMatches(dataset["Therapeutic area"], oncology_regex);
-		// Get count of values matching neuroscience_regex in dataset["Therapeutic area"]
-		const neuroscience_count = getRegexMatches(dataset["Therapeutic area"], neuroscience_regex);
-		// Get count of values matching covid_regex in dataset["Therapeutic area"]
-		const covid_count = getRegexMatches(dataset["Therapeutic area"], covid_regex);
-		// Get count of values matching respiratory_regex in dataset["Therapeutic area"]
+		const neurology_count = getRegexMatches(dataset["Therapeutic area"], neurology_regex);
+		const infectious_count = getRegexMatches(dataset["Therapeutic area"], infectious_regex);
+		const cardiology_count = getRegexMatches(dataset["Therapeutic area"], cardiology_regex);
 		const respiratory_count = getRegexMatches(dataset["Therapeutic area"], respiratory_regex);
-		// Get count of values matching cardiovascular_regex in dataset["Therapeutic area"]
-		const cardiovascular_count = getRegexMatches(dataset["Therapeutic area"], cardiovascular_regex);
-		// Get count of values matching diabetes_regex in dataset["Therapeutic area"]
-		const diabetes_count = getRegexMatches(dataset["Therapeutic area"], diabetes_regex);
-		// Get count of values matching metabolic_regex in dataset["Therapeutic area"]
-		const metabolic_count = getRegexMatches(dataset["Therapeutic area"], metabolic_regex);
-		// Get count of values not matching any of the above regexes
-		const other_count = dataset["Therapeutic area"].length - oncology_count - neuroscience_count - covid_count - respiratory_count - cardiovascular_count - diabetes_count - metabolic_count;
+		const endocrinology_count = getRegexMatches(dataset["Therapeutic area"], endocrinology_regex);
+		const gastroenterology_count = getRegexMatches(dataset["Therapeutic area"], gastroenterology_regex);
+		const dermatology_count = getRegexMatches(dataset["Therapeutic area"], dermatology_regex);
+		const ophthalmology_count = getRegexMatches(dataset["Therapeutic area"], ophthalmology_regex);
+		const orthopedics_count = getRegexMatches(dataset["Therapeutic area"], orthopedics_regex);
+		const urology_count = getRegexMatches(dataset["Therapeutic area"], urology_regex);
+		const obstetrics_gynecology_count = getRegexMatches(dataset["Therapeutic area"], obstetrics_gynecology_regex);
+		const pediatrics_count = getRegexMatches(dataset["Therapeutic area"], pediatrics_regex);
+		const psychiatry_count = getRegexMatches(dataset["Therapeutic area"], psychiatry_regex);
+		const radiology_count = getRegexMatches(dataset["Therapeutic area"], radiology_regex);
+		const anesthesiology_count = getRegexMatches(dataset["Therapeutic area"], anesthesiology_regex);
+		const hematology_count = getRegexMatches(dataset["Therapeutic area"], hematology_regex);
+		const allergy_immunology_count = getRegexMatches(dataset["Therapeutic area"], allergy_immunology_regex);
+		const nephrology_count = getRegexMatches(dataset["Therapeutic area"], nephrology_regex);
 
-		console.log("Dataset: ", dataset);
+		const other_count = dataset["Therapeutic area"].length - oncology_count - neurology_count - infectious_count - cardiology_count - respiratory_count - endocrinology_count - gastroenterology_count - dermatology_count - ophthalmology_count;
 
-		// Log the counts
-		console.log("dataset length: " + dataset["Therapeutic area"].length);
-		console.log("Oncology count: " + oncology_count);
-		console.log("Neuroscience count: " + neuroscience_count);
-		console.log("COVID count: " + covid_count);
-		console.log("Respiratory count: " + respiratory_count);
-		console.log("Cardiovascular count: " + cardiovascular_count);
-		console.log("Diabetes count: " + diabetes_count);
-		console.log("Metabolic count: " + metabolic_count);
-		console.log("Other count: " + other_count);
+		// Make an array with all the counts
+		const counts = [oncology_count, neurology_count, infectious_count, cardiology_count, respiratory_count, endocrinology_count, gastroenterology_count, dermatology_count, ophthalmology_count, orthopedics_count, urology_count, obstetrics_gynecology_count, pediatrics_count, psychiatry_count, radiology_count, anesthesiology_count, hematology_count, allergy_immunology_count, nephrology_count, other_count];
+
+		// Make an array with all the labels
+		const labels = ["Oncology", "Neurology", "Infectious", "Cardiology", "Respiratory", "Endocrinology", "Gastroenterology", "Dermatology", "Ophthalmology", "Orthopedics", "Urology", "Obstetrics and Gynecology", "Pediatrics", "Psychiatry", "Radiology", "Anesthesiology", "Hematology", "Allergy and Immunology", "Nephrology", "Other"];
+
+		// Make an array with all the regexes
+		const regexes = [oncology_regex, neurology_regex, infectious_regex, cardiology_regex, respiratory_regex, endocrinology_regex, gastroenterology_regex, dermatology_regex, ophthalmology_regex, orthopedics_regex, urology_regex, obstetrics_gynecology_regex, pediatrics_regex, psychiatry_regex, radiology_regex, anesthesiology_regex, hematology_regex, allergy_immunology_regex, nephrology_regex];
+
+		// print the counts
+		console.log("Counts:", counts);
 
 		console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
 
@@ -185,45 +233,14 @@ async function readData() {
 		dataset = {
 				name: "all",
 				children: [
-					{
-						name: "oncology",
-						value: oncology_count,
-						children: getSubclassData(dataset["Therapeutic area"], oncology_regex),
-					},
-					{
-						name: "neuroscience",
-						value: neuroscience_count,
-						children: getSubclassData(dataset["Therapeutic area"], neuroscience_regex),
-					},
-					{
-						name: "covid",
-						value: covid_count,
-						children: getSubclassData(dataset["Therapeutic area"], covid_regex),
-					},
-					{
-						name: "respiratory",
-						value: respiratory_count,
-						children: getSubclassData(dataset["Therapeutic area"], respiratory_regex),
-					},
-					{
-						name: "cardiovascular",
-						value: cardiovascular_count,
-						children: getSubclassData(dataset["Therapeutic area"], cardiovascular_regex),
-					},
-					{
-						name: "diabetes",
-						value: diabetes_count,
-						children: getSubclassData(dataset["Therapeutic area"], diabetes_regex),
-					},
-					{
-						name: "cardiovascular",
-						value: cardiovascular_count,
-						children: getSubclassData(dataset["Therapeutic area"], cardiovascular_regex),
-					},
-					{
-						name: "other",
-						value: other_count,
-					},
+					// Generate the children from the counts, labels, and regexes. Make sure to not include the "Other" category
+					...counts.slice(0, counts.length - 1).map((count, i) => {
+						return {
+							name: labels[i],
+							value: count,
+							children: getSubclassData(dataset["Therapeutic area"], regexes[i])
+						}
+					})
 				],
 			};
 		
