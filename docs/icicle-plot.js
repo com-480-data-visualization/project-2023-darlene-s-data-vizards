@@ -228,6 +228,15 @@ async function readData() {
 		return dataset;
 } 
 
+function getMedecineInfo(data, medecineName) {
+	// Find at which index the medecine is located
+	const index = data["Medecine name"].indexOf(medecineName);
+
+	const fetched = getValuesAtIndex(data, index);
+
+	return fetched;
+}
+
 // Create the icicle plot
 async function createIciclePlot() {
 	// Get our formatted dataset
