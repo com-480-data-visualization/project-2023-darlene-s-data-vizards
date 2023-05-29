@@ -145,6 +145,7 @@ function getSubclassData(full_data, dataset_to_search, subclass_regex) {
 
 		// Find the top-k medecines in the subclass
 		const medecines = findTopKSubstrings(matching_full_dataset["Medicine name"], 10);
+		// INFO: If you remove the ["Medecine name"] part, you get the top-k medecines, not just their names!
 
 		return {
 			name: subclass,
