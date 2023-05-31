@@ -314,14 +314,24 @@ function getMedecineInfo(data, medecineName) {
 }
 
 function grabMedecineNamesFromGraph(curr_focus) {
-	// Recurse over the children key, until it doesn't exist anymore. If it doesn't exist, add the data key to the array
+	// Create an empty array to store the results
+	let medicineNames = [];
+  
+	// Recurse over the children key, until it doesn't exist anymore
 	if (curr_focus.children) {
-		return curr_focus.children.map((child) => grabMedecineNamesFromGraph(child));
+	  	curr_focus.children.forEach((child) => {
+			// Concatenate the results of each recursive call to the medicineNames array
+			medicineNames = medicineNames.concat(grabMedecineNamesFromGraph(child));
+		});
+	} else {
+	  	// If children doesn't exist, add the data key to the array
+	  	medicineNames.push(curr_focus.data.date);
 	}
-	else {
-		return curr_focus.data.date;
-	}
+  
+	// Return the accumulated array of medicine names
+	return medicineNames;
 }
+  
 
 
 // Create the icicle plot
