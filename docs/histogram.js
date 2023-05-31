@@ -1,7 +1,7 @@
 // Define a function that takes a list of numbers and draws a histogram with d3.js
 export function histogram(data) {
 	console.log("Histogram function called with data: ", data);
-
+	console.log("This is broken right now, please fix!!");
 
 	// Select the SVG element on the page
 	const svg = d3.select("svg");
