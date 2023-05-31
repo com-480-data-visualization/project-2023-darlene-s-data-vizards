@@ -129,6 +129,13 @@ function findTopKSubstrings(array, k) {
 	return sortedSubstrings.slice(0, k);
 }
 
+function truncateString(str, delimiter) {
+	const delimiterIndex = str.indexOf(delimiter);
+	if (delimiterIndex !== -1) {
+		return str.substring(0, delimiterIndex);
+	}
+	return str;
+}
 
 // Get data for subclass
 function getSubclassData(full_data, dataset_to_search, subclass_regex) {
@@ -143,21 +150,43 @@ function getSubclassData(full_data, dataset_to_search, subclass_regex) {
 	const childrenData = subclassNames.map((subclass) => {
 		const count = getRegexMatches(matchArray, subclass);
 
+		// Keep the "Medecine name" and "First published" fields only!
+		const mini_medicines = Object({"name": matching_full_dataset["Medicine name"], "date": matching_full_dataset["First published"]})
+
 		// Find the top-k medecines in the subclass
-		const medecines = findTopKSubstrings(matching_full_dataset["Medicine name"], 5);
+		const medicines = findTopKSubstrings(mini_medicines["name"], 5)
 		// INFO: The value of k will greatly, greatly affect the performance of the visualization
-		// INFO: If you remove the ["Medecine name"] part, you get the top-k medecines, not just their names!
+
+		// Find to which elements the medecines correspond in mini_medecines
+		const medicine_indexes = medicines.map((medicine) => {
+			return mini_medicines["name"].indexOf(medicine);
+		});
+		// Subset the mini_medecines object to only keep the medecines in medecine_indexes
+		
+		const medicines_subset = getValuesAtIndexVectorized(mini_medicines, medicine_indexes);
+		
+		// Remove everything past the year in the dates
+		let medicines_subset_year = Object({"name": medicines_subset["name"], "date": medicines_subset["date"].map((date) => {return truncateString(date, "-")})});
+
+		// Add the value: 1 field into the medecines_subset_year object
+		medicines_subset_year["value"] = medicines_subset_year["name"].map((name) => {return 1});
+
+		// Switch this object of arrays to an array of objects
+		const maxLength = Object.values(medicines_subset_year).reduce((max, arr) => {
+			const length = arr.length;
+			return length > max ? length : max;
+		}, 0);
+
+		// Array of objects
+		const ret = Array.from({length: maxLength}, (_, i) => {
+			return Object.fromEntries(Object.entries(medicines_subset_year).map(([k, v]) => [k, v[i]]));
+		});
 
 		return {
 			name: subclass,
 			value: count,
 			// Map the medecines to the correct format
-			children: medecines.map((medecine) => {
-				return {
-					name: medecine,
-					value: 1,
-				};
-			})
+			children: ret
 		};
 	});
 
@@ -282,6 +311,17 @@ function getMedecineInfo(data, medecineName) {
 	return fetched;
 }
 
+function grabMedecineNamesFromGraph(curr_focus) {
+	// Recurse over the children key, until it doesn't exist anymore. If it doesn't exist, add the data key to the array
+	if (curr_focus.children) {
+		return curr_focus.children.map((child) => grabMedecineNamesFromGraph(child));
+	}
+	else {
+		return curr_focus.data.date;
+	}
+}
+
+
 // Create the icicle plot
 async function createIciclePlot() {
 	// Get our formatted dataset
@@ -360,6 +400,11 @@ async function createIciclePlot() {
 	  	function clicked(event, p) {
 			focus = focus === p ? p = p.parent : p;
 			currentFocus = p;
+
+			// Current focus has everything we need to draw the histogram!!
+			const histogram_data = grabMedecineNamesFromGraph(currentFocus);
+
+			histogram(histogram_data);
 		
 			root.each(function (d) {
 			  d.target = {
