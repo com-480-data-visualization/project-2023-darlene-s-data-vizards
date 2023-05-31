@@ -1,3 +1,5 @@
+import { histogram } from "./histogram.js";
+
 // Read CSV dataset from filesystem and store it in a variable
 async function readCSVFile(fileName) {
 	return new Promise((resolve, reject) => {
@@ -402,7 +404,9 @@ async function createIciclePlot() {
 			currentFocus = p;
 
 			// Current focus has everything we need to draw the histogram!!
-			const histogram_data = grabMedecineNamesFromGraph(currentFocus);
+			const histogram_data = grabMedecineNamesFromGraph(currentFocus).flat();
+			// Remove undefined values
+			histogram_data.splice(histogram_data.indexOf(undefined), 1);
 
 			histogram(histogram_data);
 		
@@ -447,9 +451,5 @@ async function createIciclePlot() {
 	// Append the SVG element to the DOM
 	document.getElementById("icicle-plot").appendChild(svgElement);
 }
-  
-
-  
-
 
 createIciclePlot();
