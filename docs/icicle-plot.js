@@ -1,3 +1,5 @@
+import { histogram } from "./histogram.js";
+
 // Read CSV dataset from filesystem and store it in a variable
 async function readCSVFile(fileName) {
 	return new Promise((resolve, reject) => {
@@ -129,6 +131,13 @@ function findTopKSubstrings(array, k) {
 	return sortedSubstrings.slice(0, k);
 }
 
+function truncateString(str, delimiter) {
+	const delimiterIndex = str.indexOf(delimiter);
+	if (delimiterIndex !== -1) {
+		return str.substring(0, delimiterIndex);
+	}
+	return str;
+}
 
 // Get data for subclass
 function getSubclassData(full_data, dataset_to_search, subclass_regex) {
@@ -143,14 +152,43 @@ function getSubclassData(full_data, dataset_to_search, subclass_regex) {
 	const childrenData = subclassNames.map((subclass) => {
 		const count = getRegexMatches(matchArray, subclass);
 
+		// Keep the "Medecine name" and "First published" fields only!
+		const mini_medicines = Object({"name": matching_full_dataset["Medicine name"], "date": matching_full_dataset["First published"]})
+
 		// Find the top-k medecines in the subclass
-		const medecines = findTopKSubstrings(matching_full_dataset["Medicine name"], 10);
-		// INFO: If you remove the ["Medecine name"] part, you get the top-k medecines, not just their names!
+		const medicines = findTopKSubstrings(mini_medicines["name"], 5)
+		// INFO: The value of k will greatly, greatly affect the performance of the visualization
+
+		// Find to which elements the medecines correspond in mini_medecines
+		const medicine_indexes = medicines.map((medicine) => {
+			return mini_medicines["name"].indexOf(medicine);
+		});
+		// Subset the mini_medecines object to only keep the medecines in medecine_indexes
+		
+		const medicines_subset = getValuesAtIndexVectorized(mini_medicines, medicine_indexes);
+		
+		// Remove everything past the year in the dates
+		let medicines_subset_year = Object({"name": medicines_subset["name"], "date": medicines_subset["date"].map((date) => {return truncateString(date, "-")})});
+
+		// Add the value: 1 field into the medecines_subset_year object
+		medicines_subset_year["value"] = medicines_subset_year["name"].map((name) => {return 1});
+
+		// Switch this object of arrays to an array of objects
+		const maxLength = Object.values(medicines_subset_year).reduce((max, arr) => {
+			const length = arr.length;
+			return length > max ? length : max;
+		}, 0);
+
+		// Array of objects
+		const ret = Array.from({length: maxLength}, (_, i) => {
+			return Object.fromEntries(Object.entries(medicines_subset_year).map(([k, v]) => [k, v[i]]));
+		});
 
 		return {
 			name: subclass,
 			value: count,
-			children: medecines
+			// Map the medecines to the correct format
+			children: ret
 		};
 	});
 
@@ -244,10 +282,6 @@ async function readData() {
 	// Make an array with all the labels
 	const labels = ["Oncology", "Neurology", "Infectious", "Cardiology", "Respiratory", "Endocrinology", "Gastroenterology", "Dermatology", "Ophthalmology", "Orthopedics", "Urology", "Obstetrics and Gynecology", "Pediatrics", "Psychiatry", "Radiology", "Anesthesiology", "Hematology", "Allergy and Immunology", "Nephrology", "Other"];
 
-
-	// print the counts
-	console.log("Counts:", counts);
-
 	console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
 
 	// Formatted dataset for Icicle plot
@@ -279,31 +313,53 @@ function getMedecineInfo(data, medecineName) {
 	return fetched;
 }
 
+function grabMedecineNamesFromGraph(curr_focus) {
+	// Create an empty array to store the results
+	let medicineNames = [];
+  
+	// Recurse over the children key, until it doesn't exist anymore
+	if (curr_focus.children) {
+	  	curr_focus.children.forEach((child) => {
+			// Concatenate the results of each recursive call to the medicineNames array
+			medicineNames = medicineNames.concat(grabMedecineNamesFromGraph(child));
+		});
+	} else {
+	  	// If children doesn't exist, add the data key to the array
+	  	medicineNames.push(curr_focus.data.date);
+	}
+  
+	// Return the accumulated array of medicine names
+	return medicineNames;
+}
+  
+
+
 // Create the icicle plot
 async function createIciclePlot() {
 	// Get our formatted dataset
 	let dataset = await readData();
-
+  
 	// Define the dimensions of the SVG container
 	const width = window.innerWidth;
 	const height = window.innerHeight;
-
+  
 	// Color scale
-	const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, dataset.children.length + 1))
-
+	const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, dataset.children.length + 2))
+  
 	// Number formatter
 	const format = d3.format(",d");
-
+  
 	// Create the hierarchical structure from data
 	const partition = data => {
-		const root = d3.hierarchy(data)
+	  	const root = d3.hierarchy(data)
 			.sum(d => d.value)
 			.sort((a, b) => b.value - a.value);
-		return d3.partition()
-			.size([height, (root.height + 1) * width / 3])
+	  	return d3.partition()
+			.size([height, (root.height + 1) * width / 4])
+			.padding(0)
 			(root);
-	};
-
+		};
+  
 	// Create the icicle plot (https://observablehq.com/@d3/zoomable-icicle)
 	function chart() {
 		const root = partition(dataset);
@@ -312,91 +368,98 @@ async function createIciclePlot() {
 
 		const svg = d3.create("svg")
 			.attr("viewBox", [0, 0, width, height]);
-
+  
 		const cell = svg
 			.selectAll("g")
 			.data(root.descendants())
 			.join("g")
 			.attr("transform", d => `translate(${d.y0},${d.x0})`);
-
-		const rect = cell.append("rect")
+  
+	  	const rect = cell.append("rect")
 			.attr("width", d => d.y1 - d.y0 - 1)
 			.attr("height", d => rectHeight(d))
 			.attr("fill-opacity", 0.6)
 			.attr("fill", d => {
-				if (!d.depth) return "#ccc";
-				while (d.depth > 1) d = d.parent;
-				return color(d.data.name);
+			  if (!d.depth) return "#ccc";
+			  while (d.depth > 1) d = d.parent;
+			  return color(d.data.name);
 			})
 			.style("cursor", "pointer")
 			.on("click", clicked);
-
+  
 		const text = cell.append("text")
 			.style("user-select", "none")
 			.attr("pointer-events", "none")
 			.attr("x", 4)
 			.attr("y", 16)
 			.attr("fill-opacity", d => +labelVisible(d));
-
+  
 		text.append("tspan")
 			.text(d => d.data.name);
-
+  
 		const tspan = text.append("tspan")
 			.attr("fill-opacity", d => labelVisible(d) * 0.7)
 			.text(d => ` ${format(d.value)}`);
-
-		cell.append("title")
+  
+	  	cell.append("title")
 			.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
-
-		// Hide all levels except the top-level
-		rect.attr("fill-opacity", d => d.depth === 1 ? 0.6 : 0);
-		text.attr("fill-opacity", d => d.depth === 1 ? +labelVisible(d) : 0);
-		tspan.attr("fill-opacity", d => d.depth === 1 ? labelVisible(d) * 0.7 : 0);
-
-		function clicked(event, p) {
+  
+	  	// Adjust opacity conditions to include fourth level
+	  	rect.attr("fill-opacity", d => d.depth <= 3 ? 0.6 : 0);
+	  	text.attr("fill-opacity", d => d.depth <= 3 ? +labelVisible(d) : 0);
+	  	tspan.attr("fill-opacity", d => d.depth <= 3 ? labelVisible(d) * 0.7 : 0);
+  
+	  	function clicked(event, p) {
 			focus = focus === p ? p = p.parent : p;
 			currentFocus = p;
 
+			// Current focus has everything we need to draw the histogram!!
+			const histogram_data = grabMedecineNamesFromGraph(currentFocus).flat();
+			// Remove undefined values
+			histogram_data.splice(histogram_data.indexOf(undefined), 1);
+
+			histogram(histogram_data);
+		
 			root.each(function (d) {
-				d.target = {
-					x0: (d.x0 - p.x0) / (p.x1 - p.x0) * height,
-					x1: (d.x1 - p.x0) / (p.x1 - p.x0) * height,
-					y0: d.y0 - p.y0,
-					y1: d.y1 - p.y0
-				};
+			  d.target = {
+				x0: (d.x0 - p.x0) / (p.x1 - p.x0) * height,
+				x1: (d.x1 - p.x0) / (p.x1 - p.x0) * height,
+				y0: d.y0 - p.y0,
+				y1: d.y1 - p.y0
+			  };
 			});
-
+		
 			const t = cell.transition().duration(750)
-				.attr("transform", d => `translate(${d.target.y0},${d.target.x0})`);
-
+			  .attr("transform", d => `translate(${d.target.y0},${d.target.x0})`);
+		
 			rect.transition(t)
-				.attr("height", d => rectHeight(d.target))
-				.attr("fill-opacity", d => (d.depth === focus.depth || d.parent === focus) ? 0.6 : 0);
-
+			  .attr("height", d => rectHeight(d.target))
+			  .attr("fill-opacity", d => (d.depth <= focus.depth + 1 || d.parent === focus) ? 0.6 : 0);
+		
 			text.transition(t)
-				.attr("fill-opacity", d => (d.depth === focus.depth || d.parent === focus) ? +labelVisible(d.target) : 0);
-
+			  .attr("fill-opacity", d => (d.depth <= focus.depth + 1 || d.parent === focus) ? +labelVisible(d.target) : 0);
+		
 			tspan.transition(t)
-				.attr("fill-opacity", d => (d.depth === focus.depth || d.parent === focus) ? labelVisible(d.target) * 0.7 : 0);
-		}
-
-		function rectHeight(d) {
-			return d.x1 - d.x0 - Math.min(1, (d.x1 - d.x0) / 2);
-		}
-
-		function labelVisible(d) {
+			  .attr("fill-opacity", d => (d.depth <= focus.depth + 1 || d.parent === focus) ? labelVisible(d.target) * 0.7 : 0);
+	  	}
+	  
+	  	// Adjust height calculation based on size proportion
+	  	function rectHeight(d) {
+			return d.x1 - d.x0;
+	  	}
+	  
+	  	function labelVisible(d) {
 			return d.y1 <= width && d.y0 >= 0 && d.x1 - d.x0 > 16;
-		}
-
-		return svg.node();
+	  	}
+	  
+	  	return svg.node();
 	}
-
+  
 	// Call the chart function on our dataset
 	const svgElement = chart(dataset);
-
+  
 	// Append the SVG element to the DOM
 	document.getElementById("icicle-plot").appendChild(svgElement);
 }
-
 
 createIciclePlot();
