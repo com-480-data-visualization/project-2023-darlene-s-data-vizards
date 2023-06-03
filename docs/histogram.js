@@ -1,6 +1,6 @@
 // Define a function that takes a list of numbers and draws a histogram with d3.js
-export function histogram(data, color, title) {
-	console.log("Histogram function called with data: ", data);
+export function histogram(data, title) {
+	// console.log("Histogram function called with data: ", data);
 
 	// Filter out NaN values
 	const filteredData = data.filter(d => !isNaN(d));
@@ -9,10 +9,11 @@ export function histogram(data, color, title) {
 	const width = window.innerWidth *0.6;
 	const height = window.innerHeight /2;
 	const marginTop = 64;
-	const marginRight = 0;
 	const marginBottom = 64;
 	const centerX = window.innerWidth / 2;
-	const marginLeft = centerX - width/2;
+	const marginLeft = 64;
+	const marginRight = 64
+	// const marginLeft = centerX - width/2;
 
 	// Group data by year
 	const groupedData = d3.group(filteredData, d => d);
@@ -27,7 +28,8 @@ export function histogram(data, color, title) {
 	const xScale = d3.scaleLinear()
 		// .domain([d3.min(histogramData, d => d.year), d3.max(histogramData, d => d.year)])
 		.domain([2016, 2023])
-		.range([marginLeft + width/8, width - width/8]);
+		// .range([marginLeft + width/8, width - width/8]);
+		.range([marginLeft+ width/8, width- width/8]);
 
 	// Create the y scale
 	const yScale = d3.scaleLinear()
@@ -41,15 +43,33 @@ export function histogram(data, color, title) {
 		.attr("viewBox", [0, 0, width, height])
 		.attr("style", "max-width: 100%; height: auto;");
 
-	// Add rectangles for each bin
-	svg.selectAll("rect")
-		.data(histogramData)
-		.join("rect")
-		.attr("x", d => xScale(d.year) - (xScale(1) - xScale(0)) / 2)
-		.attr("y", d => yScale(d.count))
-		.attr("width", xScale(1) - xScale(0)) // Use a fixed width for each bin
-		.attr("height", d => yScale(0) - yScale(d.count))
-		.attr("fill", color);
+
+	// Add rectangles for each bin with smooth transition
+	const rects = svg.selectAll("rect")
+	.data(histogramData, d => d.year);
+  
+	rects.enter()
+	  .append("rect")
+	  .attr("x", d => xScale(d.year) - (xScale(1) - xScale(0)) / 2)
+	  .attr("y", yScale(0))
+	  .attr("width", xScale(1) - xScale(0))
+	  .attr("height", 0)
+	  .attr("fill", "#0D353F")
+	  .merge(rects)
+	  .transition()
+	  .duration(1000)
+	  .attr("x", d => xScale(d.year) - (xScale(1) - xScale(0)) / 2)
+	  .attr("y", d => yScale(d.count))
+	  .attr("width", xScale(1) - xScale(0))
+	  .attr("height", d => yScale(0) - yScale(d.count));
+  
+	rects.exit()
+	  .transition()
+	  .duration(1000)
+	  .attr("y", yScale(0))
+	  .attr("height", 0)
+	  .remove();
+  
 
 	// Add x-axis
 	svg.append("g")
@@ -82,7 +102,7 @@ export function histogram(data, color, title) {
 
 	// Add the title
 	svg.append("text")
-		.attr("x", centerX)
+		.attr("x", centerX-width/4)
 		.attr("y", marginTop - 16)
 		.attr("text-anchor", "middle")
 		.text(title)

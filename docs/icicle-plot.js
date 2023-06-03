@@ -282,8 +282,6 @@ async function readData() {
 	// Make an array with all the labels
 	const labels = ["Oncology", "Neurology", "Infectious", "Cardiology", "Respiratory", "Endocrinology", "Gastroenterology", "Dermatology", "Ophthalmology", "Orthopedics", "Urology", "Obstetrics and Gynecology", "Pediatrics", "Psychiatry", "Radiology", "Anesthesiology", "Hematology", "Allergy and Immunology", "Nephrology", "Other"];
 
-	console.log("Top 10 oncology sub-categories", findTopKSubstrings(getRegexMatchesArray(dataset["Therapeutic area"], oncology_regex), 10));
-
 	// Formatted dataset for Icicle plot
 	dataset = {
 			name: "All Therapeutic Areas",
@@ -299,8 +297,6 @@ async function readData() {
 			],
 		};
 	
-	console.log("Dataset:", dataset);
-
 	return dataset;
 }
 
@@ -341,7 +337,7 @@ async function createIciclePlot() {
   
 	// Define the dimensions of the SVG container
 	const width = window.innerWidth;
-	const height = window.innerHeight;
+	const height = 2*window.innerHeight;
   
 	// Color scale
 	const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, dataset.children.length + 2))
@@ -364,11 +360,23 @@ async function createIciclePlot() {
 	function chart() {
 		const root = partition(dataset);
 		let focus = root;
-		let currentFocus;
+		let currentFocus = focus;
+
+		console.log("focus:", focus);
+
+		// Current focus has everything we need to draw the histogram!!
+		const histogram_data = grabMedecineNamesFromGraph(currentFocus).flat();
+		// Remove undefined values
+		histogram_data.splice(histogram_data.indexOf(undefined), 1);
+		// Get the title for the current category
+		  const title = currentFocus.data.name;
+		// Plot histogram
+		histogram(histogram_data, title);
+
 
 		const svg = d3.create("svg")
 			.attr("viewBox", [0, 0, width, height]);
-  
+
 		const cell = svg
 			.selectAll("g")
 			.data(root.descendants())
@@ -412,17 +420,16 @@ async function createIciclePlot() {
 	  	function clicked(event, p) {
 			focus = focus === p ? p = p.parent : p;
 			currentFocus = p;
+			console.log("currentFocus: ", currentFocus);
 
 			// Current focus has everything we need to draw the histogram!!
 			const histogram_data = grabMedecineNamesFromGraph(currentFocus).flat();
 			// Remove undefined values
 			histogram_data.splice(histogram_data.indexOf(undefined), 1);
-
-			// Get the color and title for the current category
-			// const color = color(p.data.name);
+			// Get the title for the current category
   			const title = currentFocus.data.name;
-
-			histogram(histogram_data, "#0D353F", title);
+			// Plot histogram
+			histogram(histogram_data, title);
 		
 			root.each(function (d) {
 			  d.target = {
@@ -445,7 +452,8 @@ async function createIciclePlot() {
 		
 			tspan.transition(t)
 			  .attr("fill-opacity", d => (d.depth <= focus.depth + 1 || d.parent === focus) ? labelVisible(d.target) * 0.7 : 0);
-	  	}
+	  	} 
+
 	  
 	  	// Adjust height calculation based on size proportion
 	  	function rectHeight(d) {
