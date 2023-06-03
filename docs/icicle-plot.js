@@ -286,7 +286,7 @@ async function readData() {
 
 	// Formatted dataset for Icicle plot
 	dataset = {
-			name: "all",
+			name: "All Therapeutic Areas",
 			children: [
 				// Generate the children from the counts, labels, and regexes. Make sure to not include the "Other" category
 				...counts.slice(0, counts.length - 1).map((count, i) => {
@@ -418,7 +418,11 @@ async function createIciclePlot() {
 			// Remove undefined values
 			histogram_data.splice(histogram_data.indexOf(undefined), 1);
 
-			histogram(histogram_data);
+			// Get the color and title for the current category
+			// const color = color(p.data.name);
+  			const title = currentFocus.data.name;
+
+			histogram(histogram_data, "#0D353F", title);
 		
 			root.each(function (d) {
 			  d.target = {
