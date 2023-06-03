@@ -1,0 +1,50 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[dvipsnames]{xcolor} % For colouring text
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+\title{Data Viz - Process Book}
+\author{Laurent Brock}
+\date{June 2023}
+
+% Max. 8 pages!!
+% Care about the visual/design of this report! (Literally in the guidelines)
+
+\begin{document}
+
+\maketitle
+
+\section{Describe the path you took to obtain the final result}
+
+The aim of our visualisation was to apply a readable formatting to a real, consequential field of science. As we all know, the pharmaceutical industry is one of hidden truths, large profit margins, and blocking researchers from combining molecules and making key discoveries. As such, we set out to shine a bit more clarity on the field, through visualising information which cannot be hidden: that of the EMA's (European Medicines Agency) public database of approved medicines. The publicly accessible version of the data which we have collected is simply a XLSX file, which by itself is quite difficult to understand. In order to retrieve the information on a single medicine, it is a good format, but as soon one tries to understand the data at a larger scale, it rapidly becomes a bad format.
+
+As such, we decided to visualise the trends and fields which are most present in the pharmaceutical industry in our visualisation. In order to do this, we looked to lecture \textcolor{red}{INSERT NUMBER OF LECTURE HERE} in order to inspire ourselves towards using an icicle plot as the base for our main visualisation. Conceptually, this visualisation would then by linked to all the others in our web page, so that interacting with the main visualisation would then result in the other ones being affected. Therefore, in order to make this plot particularly interactive, we made it so that clicking on the plot Zooms it in, therefore sub-setting the dataset. For example, if one is interested in finding which medicines the EMA has approved in the field of Oncology, one can click on it, and the other plots will adjust.
+
+This left us with the task of finding what other visualisation we were going to use to represent the data. We settled in the idea of a histogram, which would represent how fast each medicine's discovery, and addition, happened in the dataset. Thus, one can easily see, just below the icicle plot, adjust in real time, just how many medicines were released in a certain time-span in the field. This allow us to easily realise what fields are under most active development, at which moments in history, or, more cynically speaking, which fields bring in the most money.
+
+One of the essential parts of our visualisation was that it could be updated. Explained below in the challenges section are the details, but we wanted that our project could be updated at any time in order to incorporate the newest data possible, and that it wasn't fixed in time, like most likely a lot of other projects are.
+
+Ben suggested that we compute a sort of similarity metric between medicines, in order to see just how much the pharmaceutical industry is actually innovating, or on the other hand, recycling compounds. This part of our visualisation mostly has to rely on Python-based pre-processing, as the computational burden for generating this on-the-fly is too great for a JS web page (or at least with the know-how that we have now). This data is then read into the page when necessary. This design decision meant that we had to expand the Python / pre-processing portion of our project to now include this part. However, this doesn't stop us from simply running it all together when need be, in one single file.
+
+\section{Explain challenges that you faced and design decisions that you took}
+
+\begin{itemize}
+    \item A main constraint of our work was actually the dataset. Although it contains high quality information in each category, there are only a limited amount of categories which can be visualised in a meaningful and impacting manner. This is because the majority of the data is fully text-based, meaning that any sort of visualisation which relies on numbers of out of the question. One can extract numbers from the data, which is what Laurent did for the dates, which were converted to years, however this was a pretty limited approach as it only applied to a handful of columns. Therefore, we decided to restrict what we would be focusing on.
+
+    \item The icicle plot itself can show every single category if need be, but this approach would clutter the visualisation greatly. Therefore, Laurent opted to restrict the number of subcategories which would be shown for each category, in a top-k fashion. This greatly increases performance and visual clarity, at the cost of accuracy: it's often small sicknesses or medicines which are the most interesting in this kind of data, and this decision crushes them. However, the purpose of this visualisation is to see the field at large, the market and research efforts over time and where they're being concentrated. If one desires to search for individual or lesser known treatments, the initial, XLSX formatted data might be more adapted. Thus, he had to make the design decision to remove less common points in order to better capture the global trends.
+
+    \item It was quite difficult to read in the data. This is because the EMA presents the data in a XLSX format, which JavaScript cannot read by default. Therefore, Laurent had to write code which this data, and saved it locally in the CSV format instead. This format can be read by d3.js, and since this was the key framework under which we were going to base our visualisation, why not also use it to process the initial data? This was then read into JS, and special care has to be taken in order to retrieve the data in the format that one wishes. This is because the d3.csv function reads in data line-by-line, and so data had to be appended into a dataset Object every time. Furthermore, the dataset's column names are only located on the 7th line of the XLSX, meaning that extra work had to be done in order to accommodate, while also taking care of promises so that the data can be loaded asynchronously. However, the resulting formatting means that the web page doesn't freeze, and one can easily access each column of the dataset (eg. dataset["Therapeutic area"]), a syntax which closely resembles DataFrames, seen in R or Python. The main use of this effort and extra work is that any version of the XLSX from the EMA can be passed into the function and loaded into our visualisation. As such, by simply running the one-line Python fetcher, the whole visualisation gets updated with fresh data, meaning that our visualisation is not ephemeral, and can be used many years into the future with up-to-date data. To summarise, the data loading was a difficult but essential part of building our visualisation, in order to make work easier and our code useful into the future.
+\end{itemize}
+
+\section{Reuse the sketches/plans that you made for the first milestone, expanding them and explaining the changes}
+
+\section{Peer assessment: include a breakdown of the parts of the project completed by each team member.}
+
+\begin{itemize}
+    \item Laurent: Constructed the fetching of the data and converting it to CSV in Python, loading the data into Javascript, and formatting it into a readable and usable format for the rest of the processing (equivalent format to that of a dataframe, an object of arrays) asynchronously. Constructed many additional methods in order to facilitate accessing the data, and processing it further down the line for the other members of my group. Formatted the data into a hierarchical format which can then be easily called in the icicle plot creation function. Modified the icicle plot so that it would suit our needs (from a given template) making it wider, having the amount of columns we needed, and added the date data into the dataset creation a posteriori. Created the skeleton of the histogram function, which would be below, both in HTML and JS, and made sure that it gets the right data, at the right time (on click). Wrote a large portion of this report.
+    \item Cindy: Creation of our unique HTML skeleton for the whole site, which we used for milestone 2. Assisted in modifying the icicle plot initially to properly display our data, when we needed to.
+    \item Ben: Wrote the Python code to compute molecular structures of molecules from their names \textcolor{red}{(?)}, from which molecular similarity was computed. Transferred this data to Javascript to be plotted.
+    \item Together: Conceptualised which visualisations would be best for our website, and each where to put them.
+\end{itemize}
+
+\end{document}

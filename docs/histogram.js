@@ -1,97 +1,117 @@
 // Define a function that takes a list of numbers and draws a histogram with d3.js
-export function histogram(data) {
-	console.log("Histogram function called with data: ", data);
-	console.log("This is broken right now, please fix!!");
+export function histogram(data, title) {
+	// console.log("Histogram function called with data: ", data);
 
-	// Select the SVG element on the page
-	const svg = d3.select("svg");
+	// Filter out NaN values
+	const filteredData = data.filter(d => !isNaN(d));
+
+	// Declare the chart dimensions and margins.
+	const width = window.innerWidth *0.6;
+	const height = window.innerHeight /2;
+	const marginTop = 64;
+	const marginBottom = 64;
+	const centerX = window.innerWidth / 2;
+	const marginLeft = 64;
+	const marginRight = 64
+	// const marginLeft = centerX - width/2;
+
+	// Group data by year
+	const groupedData = d3.group(filteredData, d => d);
+
+	// Generate histogram data
+	const histogramData = Array.from(groupedData, ([year, values]) => ({
+		year: +year,
+		count: values.length,
+	}));
+
+	// Create the x scale
+	const xScale = d3.scaleLinear()
+		// .domain([d3.min(histogramData, d => d.year), d3.max(histogramData, d => d.year)])
+		.domain([2016, 2023])
+		// .range([marginLeft + width/8, width - width/8]);
+		.range([marginLeft+ width/8, width- width/8]);
+
+	// Create the y scale
+	const yScale = d3.scaleLinear()
+		.domain([0, d3.max(histogramData, d => d.count)])
+		.range([height - marginBottom, marginTop]);
+
+	// Create the SVG container
+	const svg = d3.create("svg")
+		.attr("width", width)
+		.attr("height", height)
+		.attr("viewBox", [0, 0, width, height])
+		.attr("style", "max-width: 100%; height: auto;");
+
+
+	// Add rectangles for each bin with smooth transition
+	const rects = svg.selectAll("rect")
+	.data(histogramData, d => d.year);
+  
+	rects.enter()
+	  .append("rect")
+	  .attr("x", d => xScale(d.year) - (xScale(1) - xScale(0)) / 2)
+	  .attr("y", yScale(0))
+	  .attr("width", xScale(1) - xScale(0))
+	  .attr("height", 0)
+	  .attr("fill", "#0D353F")
+	  .merge(rects)
+	  .transition()
+	  .duration(1000)
+	  .attr("x", d => xScale(d.year) - (xScale(1) - xScale(0)) / 2)
+	  .attr("y", d => yScale(d.count))
+	  .attr("width", xScale(1) - xScale(0))
+	  .attr("height", d => yScale(0) - yScale(d.count));
+  
+	rects.exit()
+	  .transition()
+	  .duration(1000)
+	  .attr("y", yScale(0))
+	  .attr("height", 0)
+	  .remove();
+  
+
+	// Add x-axis
+	svg.append("g")
+		.attr("transform", `translate(0, ${height - marginBottom})`)
+		.call(d3.axisBottom(xScale)
+			.tickValues(histogramData.map(d => d.year))
+			.tickFormat(d3.format("d"))
+			)
+		.call(g => g.select(".domain").remove())
+		.append("text")
+		.attr("x", centerX)
+		.attr("y", marginBottom-16)
+		.attr("fill", "currentColor")
+		.style("text-anchor", "middle")
+		.text("Marketing authorization year")
+		.classed("axis-label", true);
+
+	// Add y-axis
+	svg.append("g")
+		.attr("transform", `translate(${marginLeft}, 0)`)
+		.call(d3.axisLeft(yScale).ticks(height / 40))
+		.call(g => g.select(".domain").remove())
+		.append("text")
+		.attr("x", -16)
+		.attr("y", marginTop - 16)
+		.attr("fill", "currentColor")
+		.attr("text-anchor", "start")
+		.text("Medicine counts")
+		.classed("axis-label", true);
+
+	// Add the title
+	svg.append("text")
+		.attr("x", centerX-width/4)
+		.attr("y", marginTop - 16)
+		.attr("text-anchor", "middle")
+		.text(title)
+		.classed("histogram-title", true);
 	
-	// Define the dimensions of the SVG
-	const width = +svg.attr("width");
-	const height = +svg.attr("height");
-	const margin = { top: 20, right: 20, bottom: 20, left: 20 };
-	const innerWidth = width - margin.left - margin.right;
-	const innerHeight = height - margin.top - margin.bottom;
-	
-	// Create an SVG group element and translate it to the margin top-left position
-	const g = svg.append("g")
-		.attr("transform", `translate(${margin.left},${margin.top})`);
-	
-	// Create a scale for the x-axis based on the data
-	const x = d3.scaleLinear()
-		.domain([0, d3.max(data)])
-		.range([0, innerWidth]);
-	
-	// Create a histogram generator
-	const bins = d3.histogram()
-		.domain(x.domain())
-		.thresholds(x.ticks(10))(data);
-	
-	// Create a scale for the y-axis based on the maximum bin count
-	const y = d3.scaleLinear()
-		.domain([0, d3.max(bins, d => d.length)])
-		.range([innerHeight, 0]);
-	
-	// Select all existing bars and remove them with transition
-	g.selectAll("rect")
-		.transition()
-		.duration(500)
-		.attr("height", 0)
-		.remove();
-	
-	// Create the new bars of the histogram with transition
-	g.selectAll("rect")
-	  	.data(bins)
-	  	.enter().append("rect")
-			.attr("x", d => x(d.x0) + 1)
-			.attr("width", d => Math.max(0, x(d.x1) - x(d.x0) - 1))
-			.attr("y", innerHeight)
-			.attr("height", 0)
-			.attr("fill", "steelblue")
-	  	.transition()
-	  	.duration(500)
-			.attr("y", d => y(d.length))
-			.attr("height", d => y(0) - y(d.length));
-	
-	// Create the x-axis
-	g.select(".x-axis")
-	  	.transition()
-	  	.duration(500)
-	  	.call(d3.axisBottom(x));
-	
-	// Create the y-axis
-	g.select(".y-axis")
-	  	.transition()
-	  	.duration(500)
-	  	.call(d3.axisLeft(y));
-	
-	// Update the x-axis label
-	g.select(".x-axis-label")
-	  	.text("X-axis Label");
-	
-	// Update the y-axis label
-	g.select(".y-axis-label")
-	  	.text("Y-axis Label");
-	
-	// Append the x-axis label if it doesn't exist
-	if (g.select(".x-axis-label").empty()) {
-	  	g.append("text")
-			.attr("class", "x-axis-label")
-			.attr("x", innerWidth / 2)
-			.attr("y", innerHeight + margin.bottom - 5)
-			.attr("text-anchor", "middle")
-			.text("X-axis Label");
-	}
-	
-	// Append the y-axis label if it doesn't exist
-	if (g.select(".y-axis-label").empty()) {
-	  	g.append("text")
-			.attr("class", "y-axis-label")
-			.attr("x", -innerHeight / 2)
-			.attr("y", -margin.left + 10)
-			.attr("text-anchor", "middle")
-			.attr("transform", "rotate(-90)")
-			.text("Y-axis Label");
-	}
+
+	// Append the SVG to the container element
+	const container = document.getElementById('histogram');
+	container.innerHTML = '';
+	container.appendChild(svg.node());
 }
   
