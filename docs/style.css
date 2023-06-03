@@ -236,5 +236,10 @@ header nav a:hover{
 
 .axis-label {
 	font-family: 'Tenor Sans', sans-serif;
+	font-size: 1rem;
+}
+
+.histogram-title {
+	font-family: 'Tenor Sans', sans-serif;
 	font-size: 2rem;
 }

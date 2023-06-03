@@ -85,7 +85,8 @@ export function histogram(data, color, title) {
 		.attr("x", centerX)
 		.attr("y", marginTop - 16)
 		.attr("text-anchor", "middle")
-		.text(title);
+		.text(title)
+		.classed("histogram-title", true);
 	
 
 	// Append the SVG to the container element
