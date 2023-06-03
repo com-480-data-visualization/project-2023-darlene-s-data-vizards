@@ -348,6 +348,8 @@ async function createIciclePlot() {
   
 	// Number formatter
 	const format = d3.format(",d");
+
+
   
 	// Create the hierarchical structure from data
 	const partition = data => {
@@ -365,7 +367,7 @@ async function createIciclePlot() {
 		const root = partition(dataset);
 		let focus = root;
 		let currentFocus;
-
+	
 		const svg = d3.create("svg")
 			.attr("viewBox", [0, 0, width, height]);
   
@@ -441,6 +443,8 @@ async function createIciclePlot() {
 		
 			tspan.transition(t)
 			  .attr("fill-opacity", d => (d.depth <= focus.depth + 1 || d.parent === focus) ? labelVisible(d.target) * 0.7 : 0);
+			
+
 	  	}
 	  
 	  	// Adjust height calculation based on size proportion
