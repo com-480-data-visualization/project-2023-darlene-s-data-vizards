@@ -22,7 +22,7 @@ function grabMedecineNamesFromGraph(curr_focus) {
 
 // Create the zoomable treemap plot (https://observablehq.com/@d3/zoomable-treemap)
   let format = d3.format(",d")
-  let height = window.innerHeight*1.6;
+  let height = window.innerHeight*0.6;
   let width = window.innerWidth ;
   let name = d => d.ancestors().reverse().map(d => d.data.name).join("/")
   let counter = 0;

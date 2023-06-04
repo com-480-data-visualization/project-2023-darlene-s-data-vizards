@@ -6,8 +6,8 @@ export function histogram(data, title) {
 	const filteredData = data.filter(d => !isNaN(d));
 
 	// Declare the chart dimensions and margins.
-	const width = window.innerWidth *0.6;
-	const height = window.innerHeight /2;
+	const width = window.innerWidth;
+	const height = window.innerHeight /4;
 	const marginTop = 64;
 	const marginBottom = 64;
 	const centerX = window.innerWidth / 2;
@@ -98,18 +98,9 @@ export function histogram(data, title) {
 		.attr("y", marginTop - 16)
 		.attr("fill", "#000")
 		.attr("text-anchor", "start")
-		.text("Medicine counts")
 		.attr("fill", "#000")
 		.classed("axis-label", true);
 
-	// Add the title
-	svg.append("text")
-		.attr("x", centerX-width/4)
-		.attr("y", marginTop - 16)
-		.attr("text-anchor", "middle")
-		.text(title)
-		.attr("fill", "#000")
-		.classed("histogram-title", true);
 	
 
 	// Append the SVG to the container element
