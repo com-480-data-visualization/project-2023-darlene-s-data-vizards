@@ -22,8 +22,8 @@ function grabMedecineNamesFromGraph(curr_focus) {
 
 // Create the zoomable treemap plot (https://observablehq.com/@d3/zoomable-treemap)
   let format = d3.format(",d")
-  let height = 924
-  let width = 954
+  let height = window.innerHeight*1.6;
+  let width = window.innerWidth ;
   let name = d => d.ancestors().reverse().map(d => d.data.name).join("/")
   let counter = 0;
 
@@ -77,7 +77,7 @@ function grabMedecineNamesFromGraph(curr_focus) {
 
     const svg = d3.create("svg")
         .attr("viewBox", [0.5, -30.5, width, height + 32])
-        .style("font", "12px Tenor Sans");
+        .style("font", "14px Tenor Sans");
 
     let group = svg.append("g")
         .call(render, treemap(data));
@@ -93,7 +93,7 @@ function grabMedecineNamesFromGraph(curr_focus) {
           .on("click", (event, d) => d === root ? zoomout(root) : zoomin(d));
 
       node.append("title")
-          .text(d => `${name(d)}\n${format(d.value)}`);
+          .text(d => `${name(d)}\n${format(d.value)}`)
 
       node.append("rect")
         .attr("id", (d) => {
@@ -103,8 +103,10 @@ function grabMedecineNamesFromGraph(curr_focus) {
           }
           return d.leafUid;
         })
-        .attr("fill", d => d === root ? "#fff" : d.children ? "#ccc" : "#ccc")
-        .attr("stroke", "#fff");
+        .attr("fill", d => d === root ? "#0D353F" : d.children ? "#8128AD" : "#8128AD")
+        .attr("stroke", "#fff")
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);;
     
       node.append("clipPath")
         .attr("id", (d) => {
@@ -127,9 +129,20 @@ function grabMedecineNamesFromGraph(curr_focus) {
           .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`)
           .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
           .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
-          .text(d => d);
+          .text(d => d)
+          .attr("fill", "#fff");
 
       group.call(position, root);
+    }
+
+    function handleMouseOver(event, d) {
+      d3.select(this)
+      .attr("fill", "#0D353F")      
+    }
+  
+    function handleMouseOut(event, d) {
+      d3.select(this)
+      .attr("fill", "#8128AD")
     }
 
     function position(group, root) {

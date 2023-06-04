@@ -248,6 +248,8 @@ header nav a:hover{
 .container {
 	display: flex;
 	height: 100vh;
+	/* background: var(--dark-background-color); */
+	padding: 4rem ;
 }
   
 #histogram {

@@ -82,9 +82,10 @@ export function histogram(data, title) {
 		.append("text")
 		.attr("x", centerX)
 		.attr("y", marginBottom-16)
-		.attr("fill", "currentColor")
+		.attr("fill", "#fff")
 		.style("text-anchor", "middle")
 		.text("Marketing authorization year")
+		.attr("fill", "#000")
 		.classed("axis-label", true);
 
 	// Add y-axis
@@ -95,9 +96,10 @@ export function histogram(data, title) {
 		.append("text")
 		.attr("x", -16)
 		.attr("y", marginTop - 16)
-		.attr("fill", "currentColor")
+		.attr("fill", "#000")
 		.attr("text-anchor", "start")
 		.text("Medicine counts")
+		.attr("fill", "#000")
 		.classed("axis-label", true);
 
 	// Add the title
@@ -106,6 +108,7 @@ export function histogram(data, title) {
 		.attr("y", marginTop - 16)
 		.attr("text-anchor", "middle")
 		.text(title)
+		.attr("fill", "#000")
 		.classed("histogram-title", true);
 	
 
